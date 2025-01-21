@@ -1,13 +1,21 @@
-import { Container, Typography, Stack } from "@mui/material";
 import "./App.css";
+import { Container, Stack, Typography, useTheme } from "@mui/material";
 import { JavaScriptLogo } from "./JavaScriptLogo";
 import { GitHubIcon } from "./GitHubLogo";
 import { Start } from "./Start";
-import { useQuestionStore } from "./store/questions";
+import { useQuestionsStore } from "./store/questions";
 import { Game } from "./Game";
+import { useQuestionsData } from "./hooks/useQuestionsData";
+import { Results } from "./Results";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 function App() {
-  const questions = useQuestionStore((state) => state.questions);
+  const questions = useQuestionsStore((state) => state.questions);
+
+  const { unanswered } = useQuestionsData();
+  const theme = useTheme();
+
+  const medium = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <main>
@@ -18,16 +26,18 @@ function App() {
           alignItems="center"
           justifyContent="center"
         >
-          <Typography variant="h2" component="h1">
-            <JavaScriptLogo />
+          <JavaScriptLogo />
+          <Typography variant={medium ? "h2" : "h5"} component="h1">
             JavaScript Quiz
           </Typography>
         </Stack>
-
         {questions.length === 0 && <Start />}
+        {questions.length > 0 && unanswered > 0 && <Game />}
+        {questions.length > 0 && unanswered === 0 && <Results />}
 
         <h3>Programa hecho con React ⚛️</h3>
         <h3>Por Andrés Marchena</h3>
+
         <div
           style={{
             display: "flex",
@@ -50,8 +60,6 @@ function App() {
             `}
           </style>
         </div>
-
-        {questions.length > 0 && <Game />}
       </Container>
     </main>
   );
