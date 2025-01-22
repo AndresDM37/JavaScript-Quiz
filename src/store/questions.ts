@@ -13,6 +13,10 @@ interface State {
   reset: () => void;
 }
 
+const API_URL = import.meta.env.PROD
+  ? "https://quiz-of-javascript.netlify.app" 
+  : "http://localhost:5173/";
+
 export const useQuestionsStore = create<State>()(
   devtools(
     persist(
@@ -23,7 +27,7 @@ export const useQuestionsStore = create<State>()(
           currentQuestion: 0,
 
           fetchQuestions: async (limit: number) => {
-            const res = await fetch("http://localhost:5173/data.json");
+            const res = await fetch(`${API_URL}/data.json`);
             const json = await res.json();
 
             const questions = json
